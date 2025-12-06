@@ -1,0 +1,51 @@
+<!-- Modify it at your will. -->
+<group name="cisco,switch,">
+
+  <rule id="100200" level="3">
+    <decoded_as>cisco-switch</decoded_as>
+    <description>Cisco switch event Logs</description>
+  </rule>
+
+  <rule id="100201" level="10">
+    <if_sid>100200</if_sid>
+    <match>%AAA-W-REJECT</match>
+    <description>Cisco: Login REJECTED - $(protocol) from $(srcip)</description>
+    <group>cisco_auth, authentication_failed,</group>
+  </rule>
+
+  <rule id="100202" level="3">
+    <if_sid>100200</if_sid>
+    <match>%AAA-I-CONNECT</match>
+    <description>Cisco: Login SUCCESS - User $(user) from $(srcip)</description>
+    <group>cisco_auth, authentication_success,</group>
+  </rule>
+
+  <rule id="100203" level="5">
+    <if_sid>100200</if_sid>
+    <match>%SSHD-I-</match>
+    <description>Cisco: SSH session event</description>
+    <group>sshd,</group>
+  </rule>
+
+  <rule id="100204" level="7">
+    <if_sid>100200</if_sid>
+    <match>%COPY-I-FILECPY</match>
+    <description>Cisco: Configuration saved</description>
+    <group>config_changed,</group>
+  </rule>
+
+  <rule id="100205" level="3">
+    <if_sid>100200</if_sid>
+    <match>%COPY-N-TRAP</match>
+    <description>Cisco: Config copy completed</description>
+    <group>config_changed,</group>
+  </rule>
+
+  <rule id="100210" level="12" frequency="5" timeframe="120">
+    <if_matched_sid>100201</if_matched_sid>
+    <same_source_ip />
+    <description>Cisco: Brute force attack detected</description>
+    <group>cisco_auth, authentication_failures,</group>
+  </rule>
+
+</group>
