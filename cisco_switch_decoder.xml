@@ -1,0 +1,33 @@
+<!-- Modify it at your will. -->
+<!-- Cisco Switch Decoder -->
+<decoder name="cisco-switch">
+  <prematch>cisco \S+ - \S+ - %</prematch>
+</decoder>
+
+<!-- AAA Login Reject -->
+<decoder name="cisco-switch-reject">
+  <parent>cisco-switch</parent>
+  <regex>%AAA-W-REJECT: New (\S+) connection, source (\S+) destination (\S+)</regex>
+  <order>protocol, srcip, dstip</order>
+</decoder>
+
+<!-- AAA Login Success -->
+<decoder name="cisco-switch-login">
+  <parent>cisco-switch</parent>
+  <regex>%AAA-I-CONNECT: User (\S+) .+ from (\S+)</regex>
+  <order>user, srcip</order>
+</decoder>
+
+<!-- SSH Events -->
+<decoder name="cisco-switch-ssh">
+  <parent>cisco-switch</parent>
+  <regex>%SSHD-I-(\S+):</regex>
+  <order>action</order>
+</decoder>
+
+<!-- Config Copy -->
+<decoder name="cisco-switch-copy">
+  <parent>cisco-switch</parent>
+  <regex>%COPY-(\S)-(\S+):</regex>
+  <order>severity, action</order>
+</decoder>
